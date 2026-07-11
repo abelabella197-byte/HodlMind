@@ -298,7 +298,7 @@ Correct answer: {correct}
 
 *Explanation:* {quiz_data['explanation']}
 
-{'🏆 Great job! Keep learning!' if is_correct else '💪 Keep studying! You\'ll get it next time!'}
+{'🏆 Great job! Keep learning!' if is_correct else '💪 Keep studying! You will get it next time!'}
 """
     
     keyboard = [
@@ -317,12 +317,7 @@ async def risk_rules(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     """Show risk management rules"""
     rules = PsychologyData.get_risk_rules()
     
-    message = """
-🛡️ *Risk Management Golden Rules*
-
-Essential rules for protecting your capital:
-
-"""
+    message = "🛡️ *Risk Management Golden Rules*\n\nEssential rules for protecting your capital:\n\n"
     
     for i, rule in enumerate(rules, 1):
         message += f"{i}. {rule}\n\n"
@@ -357,36 +352,276 @@ Essential rules for protecting your capital:
 
 async def journal(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Trading journal feature"""
-    message = """
-📊 *Trading Journal*
+    message = (
+        "📊 *Trading Journal*\n\n"
+        "Track your trades to improve your decision-making:\n\n"
+        "*What to track in your journal:*\n\n"
+        "📅 *Date & Time:*\n"
+        "• When did you enter/exit?\n\n"
+        "💰 *Trade Details:*\n"
+        "• Asset traded\n"
+        "• Entry price\n"
+        "• Exit price\n"
+        "• Position size\n\n"
+        "🧠 *Psychology:*\n"
+        "• Why did you enter?\n"
+        "• Emotions at the time\n"
+        "• Any external influences?\n\n"
+        "📈 *Outcome:*\n"
+        "• Profit/Loss\n"
+        "• What went well?\n"
+        "• What could improve?\n\n"
+        "💡 *Journal Tips:*\n"
+        "• Write immediately after trades\n"
+        "• Be honest with yourself\n"
+        "• Review weekly to learn\n"
+        "• Identify patterns in your behavior\n\n"
+        "*Ready to start?* Use the template below!"
+    )
+    
+    keyboard = [
+        [InlineKeyboardButton("📋 Get Template", callback_data="journal_template")],
+        [InlineKeyboardButton("📊 Menu", callback_data="menu")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    if update.callback_query:
+        await update.callback_query.edit_message_text(
+            message,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
+        await update.callback_query.answer()
+    else:
+        await update.message.reply_text(
+            message,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
 
-Track your trades to improve your decision-making:
+async def journal_template(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Show journal template"""
+    template = (
+        "📋 *Trading Journal Template*\n\n"
+        "Copy this template to track your trades:\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━\n"
+        "📅 DATE: [DD/MM/YYYY]\n"
+        "━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "💰 ASSET: [BTC/ETH/etc]\n"
+        "📊 POSITION: [Long/Short]\n\n"
+        "📈 ENTRY PRICE: $\n"
+        "📉 EXIT PRICE: $\n"
+        "💼 POSITION SIZE: $\n\n"
+        "🎯 RESULT: [+/- %]\n"
+        "💵 PROFIT/LOSS: $\n\n"
+        "━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "🧠 EMOTIONAL STATE:\n"
+        "[Before Entry]\n"
+        "[During Trade]\n"
+        "[After Exit]\n\n"
+        "💡 LESSONS LEARNED:\n"
+        "[What went well]\n"
+        "[What to improve]\n\n"
+        "📝 NOTES:\n"
+        "[Additional thoughts]\n"
+        "━━━━━━━━━━━━━━━━━━━━━\n\n"
+        "💡 *Tips for effective journaling:*\n"
+        "• Be honest about emotions\n"
+        "• Write immediately after trading\n"
+        "• Review at the end of each week\n"
+        "• Look for patterns in your behavior"
+    )
+    
+    keyboard = [
+        [InlineKeyboardButton("📊 Menu", callback_data="menu")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    if update.callback_query:
+        await update.callback_query.edit_message_text(
+            template,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
+        await update.callback_query.answer()
+    else:
+        await update.message.reply_text(
+            template,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
 
-*What to track in your journal:*
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Show help message"""
+    help_text = """
+❓ *HodlMind Help*
 
-📅 *Date & Time:*
-• When did you enter/exit?
+*Available Commands:*
+/start - Welcome message
+/menu - Main menu
+/tip - Daily mindset tip
+/quiz - Test your knowledge
+/risk - Risk management rules
+/journal - Trading journal
+/help - This message
 
-💰 *Trade Details:*
-• Asset traded
-• Entry price
-• Exit price
-• Position size
+*Features:*
+• 🧠 Daily psychology tips
+• 🎯 Educational quizzes
+• 🛡️ Risk management education
+• 📊 Trading journal guidance
 
-🧠 *Psychology:*
-• Why did you enter?
-• Emotions at the time
-• Any external influences?
+*Philosophy:*
+"Master your mind, master the market."
 
-📈 *Outcome:*
-• Profit/Loss
-• What went well?
-• What could improve?
+*Privacy:*
+• No data stored
+• Anonymous usage
+• Educational focus only
 
-💡 *Journal Tips:*
-• Write immediately after trades
-• Be honest with yourself
-• Review weekly to learn
-• Identify patterns in your behavior
+*Support:* Coming soon!
+"""
+    
+    keyboard = [[InlineKeyboardButton("📊 Menu", callback_data="menu")]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    if update.callback_query:
+        await update.callback_query.edit_message_text(
+            help_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
+        await update.callback_query.answer()
+    else:
+        await update.message.reply_text(
+            help_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
 
-*Ready to start?* Use this template:
+async def settings(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Show settings menu"""
+    settings_text = """
+⚙️ *Settings*
+
+*Daily Tips:*
+💡 Daily reminder: OFF
+⏰ Time: 9:00 AM
+
+*Quiz Preferences:*
+📚 Difficulty: Beginner
+🎯 Topics: General
+
+*Notifications:*
+🔔 Daily tip: ON
+🧠 Quiz reminders: OFF
+
+*Coming Soon:*
+• Custom tip categories
+• Progress tracking
+• Achievement system
+"""
+    
+    keyboard = [
+        [InlineKeyboardButton("🔔 Toggle Tips", callback_data="toggle_tips")],
+        [InlineKeyboardButton("📊 Menu", callback_data="menu")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    if update.callback_query:
+        await update.callback_query.edit_message_text(
+            settings_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
+        await update.callback_query.answer()
+    else:
+        await update.message.reply_text(
+            settings_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup,
+        )
+
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle button presses"""
+    query = update.callback_query
+    await query.answer()
+    
+    if query.data == "tip":
+        await daily_tip(update, context)
+    elif query.data == "quiz":
+        await quiz(update, context)
+    elif query.data in ["quiz_a", "quiz_b", "quiz_c", "quiz_d"]:
+        await quiz_answer(update, context)
+    elif query.data == "risk":
+        await risk_rules(update, context)
+    elif query.data == "journal":
+        await journal(update, context)
+    elif query.data == "journal_template":
+        await journal_template(update, context)
+    elif query.data == "menu":
+        await menu(update, context)
+    elif query.data == "help":
+        await help_command(update, context)
+    elif query.data == "settings":
+        await settings(update, context)
+    elif query.data == "toggle_tips":
+        await query.edit_message_text(
+            "🔔 *Tip notifications coming soon!*\n\nStay tuned for daily reminders.",
+            parse_mode=ParseMode.MARKDOWN,
+        )
+    else:
+        await query.edit_message_text("Invalid option. Use /menu.")
+
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle unknown messages"""
+    await update.message.reply_text(
+        "I'm not sure about that. Please use /menu to see available commands."
+    )
+
+async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handle errors"""
+    logger.error(f"Update {update} caused error {context.error}")
+    if update and update.effective_message:
+        await update.effective_message.reply_text(
+            "⚠️ An error occurred. Please try again later or use /help."
+        )
+
+# ===== MAIN APPLICATION =====
+
+def main() -> None:
+    """Start the bot"""
+    if not TOKEN:
+        logger.error("No TELEGRAM_BOT_TOKEN found!")
+        return
+    
+    logger.info("Starting HodlMind Bot...")
+    
+    # Create application
+    application = Application.builder().token(TOKEN).build()
+    
+    # Add command handlers
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("menu", menu))
+    application.add_handler(CommandHandler("tip", daily_tip))
+    application.add_handler(CommandHandler("quiz", quiz))
+    application.add_handler(CommandHandler("risk", risk_rules))
+    application.add_handler(CommandHandler("journal", journal))
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("settings", settings))
+    
+    # Add button handler
+    application.add_handler(CallbackQueryHandler(button_handler))
+    
+    # Add echo handler
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    
+    # Add error handler
+    application.add_error_handler(error_handler)
+    
+    # Start polling
+    logger.info("HodlMind Bot is now running! Waiting for messages...")
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
+
+if __name__ == "__main__":
+    main()
